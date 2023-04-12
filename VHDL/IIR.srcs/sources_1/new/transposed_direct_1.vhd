@@ -5,9 +5,33 @@ use work.types.all;
 
 entity transposed_direct_1 is
     generic(FILTER_ORDER:natural:=3;
-            WIDTH:natural:=32;
-            Acoeff_array:logic_vector_array_type_fixed:= (others => (others=>'0'));
-            Bcoeff_array:logic_vector_array_type_fixed:= (others => (others=>'0'))
+            WIDTH:natural:=64;
+            INTEGER_LENGTH:natural:=23;
+            FRACTION_LENGTH:natural:=40;
+            Acoeff_array:logic_vector_array_type_fixed:= 
+            (
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000"
+            );
+            Bcoeff_array:logic_vector_array_type_fixed:= 
+            (
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000",
+                x"0000010000000000"
+            )
            );
     Port ( clk : in STD_LOGIC;
            reset : in STD_LOGIC;
@@ -17,13 +41,13 @@ end transposed_direct_1;
 
 architecture Mixed of transposed_direct_1 is
     
-    type logic_vector_array_type is array (1 to FILTER_ORDER) of std_logic_vector(2* WIDTH - 1 downto 0);
+    type logic_vector_array_type is array (1 to FILTER_ORDER) of std_logic_vector(WIDTH - 1 downto 0);
     
     signal left_network_output : logic_vector_array_type;
     signal right_network_output : logic_vector_array_type;
     
     signal input_vertical : std_logic_vector(WIDTH - 1 downto 0);
-    signal multiplier_to_output_adder : std_logic_vector(2 * WIDTH - 1 downto 0); 
+    signal multiplier_to_output_adder : std_logic_vector(WIDTH - 1 downto 0); 
     
 begin
     
@@ -31,7 +55,7 @@ begin
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
     port map(operand1=>input,
-             operand2=>left_network_output(1)(2 * WIDTH - 1 downto WIDTH),
+             operand2=>left_network_output(1),
              result=>input_vertical);
              
     MULTIPLIER:
@@ -44,8 +68,8 @@ begin
     OUTPUT_ADDER:
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
-    port map(operand1=>multiplier_to_output_adder(2 * WIDTH - 1 downto WIDTH),
-             operand2=>left_network_output(1)(2 * WIDTH - 1 downto WIDTH),
+    port map(operand1=>multiplier_to_output_adder,
+             operand2=>right_network_output(1),
              result=>output);
              
     GENERATE_NETWORK:
@@ -69,8 +93,8 @@ begin
     LAST_CELL:
     entity work.transposed_direct_1_last_cell(Structural)
     generic map(WIDTH => WIDTH,
-                Acoeff => Acoeff_array(FILTER_ORDER - 1),
-                Bcoeff => Bcoeff_array(FILTER_ORDER - 1)
+                Acoeff => Acoeff_array(FILTER_ORDER),
+                Bcoeff => Bcoeff_array(FILTER_ORDER)
                 )
                 
     port map(clk => clk,
