@@ -15,6 +15,10 @@ architecture Behavioral of TB_transposed_direct_1 is
     
     constant FILTER_ORDER:natural:=8;
     
+    constant INTEGER_LENGTH:natural:= 23;
+    
+    constant FRACTION_LENGTH:natural:= 40;
+    
     constant Coef_A : logic_vector_array_type_fixed := 
     (
         "0000000000000000000000010000000000000000000000000000000000000000",
@@ -44,26 +48,34 @@ architecture Behavioral of TB_transposed_direct_1 is
     file input_test_vector : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\SystemInput.txt";
     file expected_results : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\SystemOutput.txt";
     
-    signal clk_i: std_logic;
-    signal reset_i: std_logic;
+    signal clk_s: std_logic;
+    signal reset_s: std_logic;
+    signal en_s: std_logic;
     
-    signal input : std_logic_vector(WIDTH - 1 downto 0);
-    signal output : std_logic_vector(WIDTH - 1 downto 0);
-    signal expected : std_logic_vector(WIDTH - 1 downto 0);
+    signal input_s : std_logic_vector(WIDTH - 1 downto 0);
+    signal output_s : std_logic_vector(WIDTH - 1 downto 0);
+    signal expected_s : std_logic_vector(WIDTH - 1 downto 0);
 
     
 begin
     CLOCK: 
     process is
     begin
-        clk_i <= '0', '1' after 100 ns;
+        clk_s <= '0', '1' after 100 ns;
         wait for 200 ns;
     end process;
     
     RESET: 
     process is
     begin
-        reset_i <= '0', '1' after 50ns, '0' after 150ns;
+        reset_s <= '0', '1' after 50ns, '0' after 150ns;
+        wait;
+    end process;
+    
+    ENABLE:
+    process is
+        begin
+        en_s <= '0', '1' after 150ns;
         wait;
     end process;
 
@@ -71,39 +83,45 @@ begin
     process is
         variable file_line : line;
     begin
-        input <= (others=>'0');
-        wait until falling_edge(clk_i);
+        input_s <= (others=>'0');
+        wait for 200ns;
+        wait until falling_edge(clk_s);
         while not endfile(input_test_vector) loop
             readline(input_test_vector,file_line);
-            input <= to_std_logic_vector(string(file_line));
-            wait until falling_edge(clk_i);
+            input_s <= to_std_logic_vector(string(file_line));
+            wait until falling_edge(clk_s);
         end loop;
     end process;
     
     EXPECTED_RESULT:
     process is
         variable file_line : line;
+        variable clk_edges : natural := 0;
     begin
-        expected <= (others=>'0');
-        wait until falling_edge(clk_i);
+        expected_s <= (others=>'0');
+        wait for 400ns;
+        wait until rising_edge(clk_s);
         while not endfile(expected_results) loop
             readline(expected_results,file_line);
-            expected <= to_std_logic_vector(string(file_line));
-            wait until falling_edge(clk_i);
+            expected_s <= to_std_logic_vector(string(file_line));
+            wait until rising_edge(clk_s);
         end loop;
     end process;
     
-    FILTER: entity work.transposed_direct_1(Mixed)
+    DATA_PATH: entity work.transposed_direct_1(Mixed)
     generic map(
                 FILTER_ORDER => FILTER_ORDER,
                 WIDTH => WIDTH,
+                INTEGER_LENGTH => INTEGER_LENGTH,
+                FRACTION_LENGTH => FRACTION_LENGTH,
                 Acoeff_array => Coef_A,
                 Bcoeff_array => Coef_B
                 )
     port map(
-               clk => clk_i,
-               reset => reset_i,
-               input => input,
-               output => output
+               clk => clk_s,
+               reset => reset_s,
+               en => en_s,
+               input => input_s,
+               output => output_s
 	        );            
 end Behavioral;

@@ -12,42 +12,46 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="573.660 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,914.858 ns"></ZoomEndTime>
-      <Cursor1Time time="1,452.063 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,808.549 ns"></ZoomEndTime>
+      <Cursor1Time time="350.513 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="224"></NameColumnWidth>
-      <ValueColumnWidth column_width="68"></ValueColumnWidth>
+      <ValueColumnWidth column_width="64"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="5" />
-   <wvobject fp_name="/TB_transposed_direct_1/clk_i" type="logic">
-      <obj_property name="ElementShortName">clk_i</obj_property>
-      <obj_property name="ObjectShortName">clk_i</obj_property>
+   <WVObjectSize size="6" />
+   <wvobject fp_name="/TB_transposed_direct_1/clk_s" type="logic">
+      <obj_property name="ElementShortName">clk_s</obj_property>
+      <obj_property name="ObjectShortName">clk_s</obj_property>
    </wvobject>
-   <wvobject fp_name="/TB_transposed_direct_1/reset_i" type="logic">
-      <obj_property name="ElementShortName">reset_i</obj_property>
-      <obj_property name="ObjectShortName">reset_i</obj_property>
+   <wvobject fp_name="/TB_transposed_direct_1/reset_s" type="logic">
+      <obj_property name="ElementShortName">reset_s</obj_property>
+      <obj_property name="ObjectShortName">reset_s</obj_property>
    </wvobject>
-   <wvobject fp_name="/TB_transposed_direct_1/input" type="array">
-      <obj_property name="ElementShortName">input[63:0]</obj_property>
-      <obj_property name="ObjectShortName">input[63:0]</obj_property>
+   <wvobject fp_name="/TB_transposed_direct_1/en_s" type="logic">
+      <obj_property name="ElementShortName">en_s</obj_property>
+      <obj_property name="ObjectShortName">en_s</obj_property>
+   </wvobject>
+   <wvobject fp_name="/TB_transposed_direct_1/input_s" type="array">
+      <obj_property name="ElementShortName">input_s[63:0]</obj_property>
+      <obj_property name="ObjectShortName">input_s[63:0]</obj_property>
       <obj_property name="Radix">REALRADIX</obj_property>
       <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
       <obj_property name="radix_fractionWidth">40</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
    </wvobject>
-   <wvobject fp_name="/TB_transposed_direct_1/output" type="array">
-      <obj_property name="ElementShortName">output[63:0]</obj_property>
-      <obj_property name="ObjectShortName">output[63:0]</obj_property>
+   <wvobject fp_name="/TB_transposed_direct_1/output_s" type="array">
+      <obj_property name="ElementShortName">output_s[63:0]</obj_property>
+      <obj_property name="ObjectShortName">output_s[63:0]</obj_property>
       <obj_property name="Radix">REALRADIX</obj_property>
       <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
       <obj_property name="radix_fractionWidth">40</obj_property>
       <obj_property name="radix_otherWidth">0</obj_property>
    </wvobject>
-   <wvobject fp_name="/TB_transposed_direct_1/expected" type="array">
-      <obj_property name="ElementShortName">expected[63:0]</obj_property>
-      <obj_property name="ObjectShortName">expected[63:0]</obj_property>
+   <wvobject fp_name="/TB_transposed_direct_1/expected_s" type="array">
+      <obj_property name="ElementShortName">expected_s[63:0]</obj_property>
+      <obj_property name="ObjectShortName">expected_s[63:0]</obj_property>
       <obj_property name="Radix">REALRADIX</obj_property>
       <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
       <obj_property name="radix_fractionWidth">40</obj_property>

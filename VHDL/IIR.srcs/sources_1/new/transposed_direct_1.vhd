@@ -35,6 +35,7 @@ entity transposed_direct_1 is
            );
     Port ( clk : in STD_LOGIC;
            reset : in STD_LOGIC;
+           en : in STD_LOGIC;
            input : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
            output : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
 end transposed_direct_1;
@@ -47,14 +48,26 @@ architecture Mixed of transposed_direct_1 is
     signal right_network_output : logic_vector_array_type;
     
     signal input_vertical : std_logic_vector(WIDTH - 1 downto 0);
+    signal input_reg_to_input_adder : std_logic_vector(WIDTH - 1 downto 0); 
+    signal output_adder_to_output_reg : std_logic_vector(WIDTH - 1 downto 0); 
     signal multiplier_to_output_adder : std_logic_vector(WIDTH - 1 downto 0); 
     
 begin
+
+    INPUT_REGISTER:
+    entity work.data_register_enable(Behavioral)
+    generic map(WIDTH => WIDTH)
+    port map(clk => clk,
+             en => en,
+             data_in => input,
+             data_out => input_reg_to_input_adder,
+             reset => reset);
+    
     
     INPUT_ADDER:
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
-    port map(operand1=>input,
+    port map(operand1=>input_reg_to_input_adder,
              operand2=>left_network_output(1),
              result=>input_vertical);
              
@@ -70,7 +83,16 @@ begin
     generic map(WIDTH => WIDTH)
     port map(operand1=>multiplier_to_output_adder,
              operand2=>right_network_output(1),
-             result=>output);
+             result=>output_adder_to_output_reg);
+             
+    OUTPUT_REGISTER:
+    entity work.data_register_enable(Behavioral)
+    generic map(WIDTH => WIDTH)
+    port map(clk => clk,
+             en => en,
+             data_in => output_adder_to_output_reg,
+             data_out => output,
+             reset => reset);
              
     GENERATE_NETWORK:
     for iterator in 1 to FILTER_ORDER - 1 generate
