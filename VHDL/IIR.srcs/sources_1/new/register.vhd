@@ -4,28 +4,28 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity data_register is
     generic (WIDTH: natural:=32);
     Port( 
-            clk : in STD_LOGIC;
-            data_in : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-            data_out : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-            reset : in STD_LOGIC
+            clk_i : in STD_LOGIC;
+            data_in_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
+            data_out_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
+            reset_i : in STD_LOGIC
          );
 end data_register;
 
 architecture Behavioral of data_register is
-    signal data_out_next:STD_LOGIC_VECTOR(WIDTH - 1 downto 0);
+    signal data_out_next_s:STD_LOGIC_VECTOR(WIDTH - 1 downto 0);
 begin
 
-    process(clk)is
+    process(clk_i)is
     begin
-        if(clk'event and clk = '1') then
-            if(reset = '1')then
-                data_out_next <= (others=>'0');
+        if(clk_i'event and clk_i = '1') then
+            if(reset_i = '1')then
+                data_out_next_s <= (others=>'0');
             else
-                data_out_next <= data_in;
+                data_out_next_s <= data_in_i;
             end if; 
         end if;
     end process;
     
-    data_out <= data_out_next;
+    data_out_o <= data_out_next_s;
     
 end Behavioral;

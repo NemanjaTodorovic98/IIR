@@ -9,37 +9,37 @@ end TB_transposed_direct_1_cell;
 architecture Behavioral of TB_transposed_direct_1_cell is
 
     constant LENGTH:natural:= 10;
-    constant WIDTH:natural:=64;
+    constant WIDTH:natural:=32;
     
     type input_stream_t is array (1 to LENGTH) of std_logic_vector(WIDTH - 1 downto 0);
     type adder_input_stream_t is array (1 to LENGTH) of std_logic_vector(WIDTH - 1 downto 0);
     -- 1 - 10
     constant input_stimulus:input_stream_t:=
     (
-    "0000000000000000000000010000000000000000000000000000000000000000",
-    "0000000000000000000000100000000000000000000000000000000000000000",
-    "0000000000000000000000110000000000000000000000000000000000000000",
-    "0000000000000000000001000000000000000000000000000000000000000000",
-    "0000000000000000000001010000000000000000000000000000000000000000",
-    "0000000000000000000001100000000000000000000000000000000000000000", 
-    "0000000000000000000001110000000000000000000000000000000000000000",
-    "0000000000000000000010000000000000000000000000000000000000000000",
-    "0000000000000000000010010000000000000000000000000000000000000000",
-    "0000000000000000000010100000000000000000000000000000000000000000"
+        X"000100000",
+        X"000200000",
+        X"000300000",
+        X"000400000",
+        X"000500000",
+        X"000600000",
+        X"000700000",
+        X"000800000",
+        X"000900000",
+        X"000A00000"
     );
     
     constant input_adder:adder_input_stream_t:=
     (
-    "0000000000000000000000010000000000000000000000000000000000000000",
-    "0000000000000000000000100000000000000000000000000000000000000000",
-    "0000000000000000000000110000000000000000000000000000000000000000",
-    "0000000000000000000001000000000000000000000000000000000000000000",
-    "0000000000000000000001010000000000000000000000000000000000000000",
-    "0000000000000000000001100000000000000000000000000000000000000000", 
-    "0000000000000000000001110000000000000000000000000000000000000000",
-    "0000000000000000000010000000000000000000000000000000000000000000",
-    "0000000000000000000010010000000000000000000000000000000000000000",
-    "0000000000000000000010100000000000000000000000000000000000000000"
+        X"000100000",
+        X"000200000",
+        X"000300000",
+        X"000400000",
+        X"000500000",
+        X"000600000",
+        X"000700000",
+        X"000800000",
+        X"000900000",
+        X"000A00000"
     );
     
     constant coefficientA:std_logic_vector(WIDTH - 1 downto 0):= "1000000000000000000001010000000000000000000000000000000000000000"; --number 5
@@ -47,6 +47,7 @@ architecture Behavioral of TB_transposed_direct_1_cell is
     
     signal clk_i: std_logic;
     signal reset_i: std_logic;
+    signal en_i : std_logic := '1';
     
     signal input_left_i: std_logic_vector(WIDTH - 1 downto 0);
     signal input_right_i: std_logic_vector(WIDTH - 1 downto 0);
@@ -88,13 +89,14 @@ begin
                 Bcoeff => coefficientB
                 )
     port map(
-               clk => clk_i,
-               reset => reset_i,
-               input_signal => input_i,
-               left_adder_input => input_left_i,
-               right_adder_input => input_right_i,
-               left_reg_output => output_left_o,
-               right_reg_output => output_right_o
+               clk_i => clk_i,
+               reset_i => reset_i,
+               en_i => en_i,
+               input_i => input_i,
+               left_adder_input_i => input_left_i,
+               right_adder_input_i => input_right_i,
+               left_reg_output_o => output_left_o,
+               right_reg_output_o => output_right_o
 	        );    
         
 end Behavioral;

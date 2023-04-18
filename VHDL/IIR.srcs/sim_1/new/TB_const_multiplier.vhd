@@ -62,9 +62,9 @@ begin
                 INTEGER_LENGTH => INTEGER_LENGTH,
                 FRACTION_LENGTH => FRACTION_LENGTH
                 )
-    port map(operand1 => op1,
-             operand2 => op2,
-             result => result
+    port map(operand1_i => op1,
+             operand2_i => op2,
+             result_o => result
 	        );    
 	        
 end Behavioral;

@@ -16,16 +16,16 @@ architecture Behavioral of TB_transposed_direct_1_last_cell is
     -- 1 - 10
     constant input_stimulus:input_stream_t:=
     (
-    "00000000000100000000000000000000",
-    "00000000001000000000000000000000",
-    "00000000001100000000000000000000",
-    "00000000010000000000000000000000",
-    "00000000010100000000000000000000",
-    "00000000011000000000000000000000", 
-    "00000000011100000000000000000000",
-    "00000000100000000000000000000000",
-    "00000000100100000000000000000000",
-    "00000000101000000000000000000000"
+        X"000100000",
+        X"000200000",
+        X"000300000",
+        X"000400000",
+        X"000500000",
+        X"000600000",
+        X"000700000",
+        X"000800000",
+        X"000900000",
+        X"000A00000"
     );
     
 
@@ -34,6 +34,7 @@ architecture Behavioral of TB_transposed_direct_1_last_cell is
     
     signal clk_i: std_logic;
     signal reset_i: std_logic;
+    signal en_i : std_logic:= '1';
     
     signal input_i: std_logic_vector(WIDTH - 1 downto 0);
     signal output_left_o: std_logic_vector(WIDTH - 1 downto 0);
@@ -70,11 +71,12 @@ begin
                 Bcoeff => coefficientB
                 )
     port map(
-               clk => clk_i,
-               reset => reset_i,
-               input_signal => input_i,
-               left_reg_output => output_left_o,
-               right_reg_output => output_right_o
+               clk_i => clk_i,
+               reset_i => reset_i,
+               en_i => en_i,
+               input_i => input_i,
+               left_reg_output_o => output_left_o,
+               right_reg_output_o => output_right_o
 	        );    
         
 end Behavioral;

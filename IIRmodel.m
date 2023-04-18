@@ -8,8 +8,8 @@ phase = [0 0 0];
 Tmax = 1 / min(f(f>0)); %Show 1 period of the slowest component in signal
 
 %Quantization details
-WordLength = 64;
-FractionLength = 40;
+WordLength = 32;
+FractionLength = 20;
 
 struct.mode = 'fixed';
 struct.roundmode = 'round';

@@ -63,9 +63,9 @@ begin
     generic map(
                 WIDTH => WIDTH
                 )
-    port map(operand1 => op1,
-             operand2 => op2,
-             result => result
+    port map(operand1_i => op1,
+             operand2_i => op2,
+             result_o => result
 	        );    
 	        
 end Behavioral;

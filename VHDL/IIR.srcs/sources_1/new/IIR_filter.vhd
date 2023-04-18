@@ -5,38 +5,29 @@ use work.types.all;
 
 entity IIR_filter is
     generic(FILTER_ORDER:natural:=3;
-        WIDTH:natural:=64;
-        INTEGER_LENGTH:natural:=23;
-        FRACTION_LENGTH:natural:=40;
-        Acoeff_array:logic_vector_array_type_fixed:= 
-        (
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000"
-        );
-        Bcoeff_array:logic_vector_array_type_fixed:= 
-        (
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000",
-            x"0000010000000000"
-        )
+            WIDTH:natural:=32;
+            INTEGER_LENGTH:natural:=11;
+            FRACTION_LENGTH:natural:=20;
+            Acoeff_array:logic_vector_array_type_fixed:= 
+            (
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
+            );
+            Bcoeff_array:logic_vector_array_type_fixed:= 
+            (
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
+            )
        );
     Port ( clk_i : in STD_LOGIC;
            input_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
            command_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-           output_i : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
+           output_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
+           reset_o : out STD_LOGIC);
 end IIR_filter;
 
 architecture Structural of IIR_filter is
@@ -54,11 +45,11 @@ begin
                 FRACTION_LENGTH => FRACTION_LENGTH,
                 Acoeff_array => Acoeff_array,
                 Bcoeff_array => Bcoeff_array)
-    Port map(  clk => clk_i,
-               reset => reset_s,
-               en => en_s,
-               input => input_i,
-               output => output_i);
+    Port map(  clk_i => clk_i,
+               reset_i => reset_s,
+               en_i => en_s,
+               input_i => input_i,
+               output_o => output_o);
                
     CONTROL_PATH:
     entity work.control_unit(Behavioral)
@@ -68,4 +59,5 @@ begin
                en_o => en_s,
                reset_o => reset_s);
 
+    reset_o <= reset_s;
 end Structural;

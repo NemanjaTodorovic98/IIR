@@ -5,94 +5,67 @@ use work.types.all;
 
 entity transposed_direct_1 is
     generic(FILTER_ORDER:natural:=3;
-            WIDTH:natural:=64;
-            INTEGER_LENGTH:natural:=23;
-            FRACTION_LENGTH:natural:=40;
+            WIDTH:natural:=32;
+            INTEGER_LENGTH:natural:=11;
+            FRACTION_LENGTH:natural:=20;
             Acoeff_array:logic_vector_array_type_fixed:= 
             (
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000"
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
             );
             Bcoeff_array:logic_vector_array_type_fixed:= 
             (
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000",
-                x"0000010000000000"
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
+                x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
             )
            );
-    Port ( clk : in STD_LOGIC;
-           reset : in STD_LOGIC;
-           en : in STD_LOGIC;
-           input : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-           output : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
+    Port ( clk_i : in STD_LOGIC;
+           reset_i : in STD_LOGIC;
+           en_i : in STD_LOGIC;
+           input_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
+           output_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
 end transposed_direct_1;
 
 architecture Mixed of transposed_direct_1 is
     
     type logic_vector_array_type is array (1 to FILTER_ORDER) of std_logic_vector(WIDTH - 1 downto 0);
     
-    signal left_network_output : logic_vector_array_type;
-    signal right_network_output : logic_vector_array_type;
+    signal left_network_output_s : logic_vector_array_type;
+    signal right_network_output_s : logic_vector_array_type;
     
-    signal input_vertical : std_logic_vector(WIDTH - 1 downto 0);
-    signal input_reg_to_input_adder : std_logic_vector(WIDTH - 1 downto 0); 
-    signal output_adder_to_output_reg : std_logic_vector(WIDTH - 1 downto 0); 
-    signal multiplier_to_output_adder : std_logic_vector(WIDTH - 1 downto 0); 
+    signal input_vertical_s : std_logic_vector(WIDTH - 1 downto 0);
+    signal input_reg_to_input_adder_s : std_logic_vector(WIDTH - 1 downto 0); 
+    signal output_adder_to_output_reg_s : std_logic_vector(WIDTH - 1 downto 0); 
+    signal multiplier_to_output_adder_s : std_logic_vector(WIDTH - 1 downto 0); 
     
 begin
-
-    INPUT_REGISTER:
-    entity work.data_register_enable(Behavioral)
-    generic map(WIDTH => WIDTH)
-    port map(clk => clk,
-             en => en,
-             data_in => input,
-             data_out => input_reg_to_input_adder,
-             reset => reset);
-    
     
     INPUT_ADDER:
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
-    port map(operand1=>input_reg_to_input_adder,
-             operand2=>left_network_output(1),
-             result=>input_vertical);
+    port map(operand1_i=>input_reg_to_input_adder_s,
+             operand2_i=>left_network_output_s(1),
+             result_o=>input_vertical_s);
              
     MULTIPLIER:
     entity work.const_multiplier(Behavioral)
-    generic map(WIDTH => WIDTH)
-    port map(operand1=>input_vertical,
-             operand2=>Bcoeff_array(0),
-             result=>multiplier_to_output_adder);
+    generic map(WIDTH => WIDTH,
+                INTEGER_LENGTH => INTEGER_LENGTH,
+                FRACTION_LENGTH => FRACTION_LENGTH)
+    port map(operand1_i=>input_vertical_s,
+             operand2_i=>Bcoeff_array(0),
+             result_o=>multiplier_to_output_adder_s);
              
     OUTPUT_ADDER:
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
-    port map(operand1=>multiplier_to_output_adder,
-             operand2=>right_network_output(1),
-             result=>output_adder_to_output_reg);
-             
-    OUTPUT_REGISTER:
-    entity work.data_register_enable(Behavioral)
-    generic map(WIDTH => WIDTH)
-    port map(clk => clk,
-             en => en,
-             data_in => output_adder_to_output_reg,
-             data_out => output,
-             reset => reset);
+    port map(operand1_i=>multiplier_to_output_adder_s,
+             operand2_i=>right_network_output_s(1),
+             result_o=>output_adder_to_output_reg_s);           
              
     GENERATE_NETWORK:
     for iterator in 1 to FILTER_ORDER - 1 generate
@@ -102,13 +75,14 @@ begin
                     Acoeff => Acoeff_array(iterator),
                     Bcoeff => Bcoeff_array(iterator)
                     )
-        port map(clk => clk,
-                 reset => reset,
-                 input_signal => input_vertical,
-                 left_adder_input => left_network_output(iterator + 1),
-                 right_adder_input => right_network_output(iterator + 1),
-                 left_reg_output => left_network_output(iterator),
-                 right_reg_output => right_network_output(iterator)
+        port map(clk_i => clk_i,
+                 reset_i => reset_i,
+                 en_i => en_i,
+                 input_i => input_vertical_s,
+                 left_adder_input_i => left_network_output_s(iterator + 1),
+                 right_adder_input_i => right_network_output_s(iterator + 1),
+                 left_reg_output_o => left_network_output_s(iterator),
+                 right_reg_output_o => right_network_output_s(iterator)
                  );           
     end generate;
     
@@ -119,10 +93,11 @@ begin
                 Bcoeff => Bcoeff_array(FILTER_ORDER)
                 )
                 
-    port map(clk => clk,
-             reset => reset,
-             input_signal => input_vertical,
-             left_reg_output => left_network_output(FILTER_ORDER),
-             right_reg_output => right_network_output(FILTER_ORDER)
+    port map(clk_i => clk_i,
+             en_i => en_i,
+             reset_i => reset_i,
+             input_i => input_vertical_s,
+             left_reg_output_o => left_network_output_s(FILTER_ORDER),
+             right_reg_output_o => right_network_output_s(FILTER_ORDER)
              );           
 end Mixed;
