@@ -24,8 +24,8 @@ entity transposed_direct_1 is
             )
            );
     Port ( clk_i : in STD_LOGIC;
-           reset_i : in STD_LOGIC;
-           en_i : in STD_LOGIC;
+           reset_int_i : in STD_LOGIC;
+           reset_ext_i : in STD_LOGIC;
            input_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
            output_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
 end transposed_direct_1;
@@ -38,17 +38,21 @@ architecture Mixed of transposed_direct_1 is
     signal right_network_output_s : logic_vector_array_type;
     
     signal input_vertical_s : std_logic_vector(WIDTH - 1 downto 0);
-    signal input_reg_to_input_adder_s : std_logic_vector(WIDTH - 1 downto 0); 
-    signal output_adder_to_output_reg_s : std_logic_vector(WIDTH - 1 downto 0); 
     signal multiplier_to_output_adder_s : std_logic_vector(WIDTH - 1 downto 0); 
     
+    signal reset_s : std_logic;
+
 begin
+    
+    reset_s <= reset_int_i or reset_ext_i;
     
     INPUT_ADDER:
     entity work.adder(Behavioral)
     generic map(WIDTH => WIDTH)
-    port map(operand1_i=>input_reg_to_input_adder_s,
+    port map(operand1_i=>input_i,
              operand2_i=>left_network_output_s(1),
+--             clk_i => clk_i,
+--             reset_i => reset_s,
              result_o=>input_vertical_s);
              
     MULTIPLIER:
@@ -65,8 +69,10 @@ begin
     generic map(WIDTH => WIDTH)
     port map(operand1_i=>multiplier_to_output_adder_s,
              operand2_i=>right_network_output_s(1),
-             result_o=>output_adder_to_output_reg_s);           
-             
+--             clk_i => clk_i,
+--             reset_i => reset_s,
+             result_o=>output_o);           
+
     GENERATE_NETWORK:
     for iterator in 1 to FILTER_ORDER - 1 generate
         REGULAR_CELL:
@@ -76,8 +82,7 @@ begin
                     Bcoeff => Bcoeff_array(iterator)
                     )
         port map(clk_i => clk_i,
-                 reset_i => reset_i,
-                 en_i => en_i,
+                 reset_i => reset_s,
                  input_i => input_vertical_s,
                  left_adder_input_i => left_network_output_s(iterator + 1),
                  right_adder_input_i => right_network_output_s(iterator + 1),
@@ -94,8 +99,7 @@ begin
                 )
                 
     port map(clk_i => clk_i,
-             en_i => en_i,
-             reset_i => reset_i,
+             reset_i => reset_s,
              input_i => input_vertical_s,
              left_reg_output_o => left_network_output_s(FILTER_ORDER),
              right_reg_output_o => right_network_output_s(FILTER_ORDER)

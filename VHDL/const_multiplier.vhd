@@ -13,6 +13,9 @@ end const_multiplier;
 
 architecture Behavioral of const_multiplier is
 
+--    attribute use_dsp : string;
+--    attribute use_dsp of Behavioral : architecture is "yes";
+
     signal temp_result_s : std_logic_vector(2 * WIDTH - 1 downto 0);
 
 begin

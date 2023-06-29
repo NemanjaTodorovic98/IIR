@@ -24,20 +24,16 @@ entity IIR_filter is
             )
        );
     Port ( clk_i : in STD_LOGIC;
+           reset_i : in STD_LOGIC;
            input_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-           command_i : in STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-           output_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0);
-           reset_o : out STD_LOGIC);
+           output_o : out STD_LOGIC_VECTOR (WIDTH - 1 downto 0));
+           
 end IIR_filter;
 
 architecture Structural of IIR_filter is
 
-    signal reset_s : STD_LOGIC;
-    signal en_s : STD_LOGIC;
-
-begin
-    
-    DATA_PATH:
+begin 
+    INST:
     entity work.transposed_direct_1(Mixed)
     generic map(FILTER_ORDER => FILTER_ORDER,
                 WIDTH => WIDTH,
@@ -46,18 +42,7 @@ begin
                 Acoeff_array => Acoeff_array,
                 Bcoeff_array => Bcoeff_array)
     Port map(  clk_i => clk_i,
-               reset_i => reset_s,
-               en_i => en_s,
+               reset_i => reset_i,
                input_i => input_i,
                output_o => output_o);
-               
-    CONTROL_PATH:
-    entity work.control_unit(Behavioral)
-    generic map(WIDTH => WIDTH)
-    Port map(  clk_i => clk_i,
-               command_i => command_i,
-               en_o => en_s,
-               reset_o => reset_s);
-
-    reset_o <= reset_s;
 end Structural;
