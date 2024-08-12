@@ -92,8 +92,8 @@ architecture Behavioral of TB_axi_iir_v1_0 is
     signal m00_axis_output_tlast_s   : std_logic;
     signal m00_axis_output_tready_s  : std_logic;
     
-    file input_test_vector : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\SystemInput.txt";
-    file expected_results : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\SystemOutput.txt";
+    file input_test_vector : text open read_mode is "D:\Project\IIR\SystemInput.txt";
+    file expected_results : text open read_mode is "D:\Project\IIR\SystemOutput.txt";
     
     signal clk_s: std_logic;
     
