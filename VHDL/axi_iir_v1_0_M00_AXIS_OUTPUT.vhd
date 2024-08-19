@@ -47,20 +47,22 @@ architecture Behavioral of axi_iir_v1_0_M00_AXIS_OUTPUT is
 	--streaming data valid
 	signal axis_tvalid : std_logic := '0';
 	--streaming data valid delayed by one clock cycle
-	signal axis_tvalid_delay : std_logic := '0';
+	signal axis_tvalid_delay_1cycle : std_logic := '0';
+    signal axis_tvalid_delay_2cycle : std_logic := '0';
 	--Last of the streaming data 
 	signal axis_tlast : std_logic := '0';
 	--Last of the streaming data delayed by one clock cycle
-	signal axis_tlast_delay	: std_logic := '0';
+	signal axis_tlast_delay_1cycle	: std_logic := '0';
+    signal axis_tlast_delay_2cycle	: std_logic := '0';
 	
 	signal reset_s : std_logic := '0';
 
 begin
 	-- I/O Connections assignments
 
-	M_AXIS_TVALID	<= axis_tvalid_delay;
+	M_AXIS_TVALID	<= axis_tvalid_delay_2cycle;
 	
-	M_AXIS_TLAST	<= axis_tlast_delay;
+	M_AXIS_TLAST	<= axis_tlast_delay_2cycle;
 	M_AXIS_TSTRB	<= tstrb_propagate_i;
                                                                              
 	axis_tvalid <= input_data_valid_i;
@@ -72,14 +74,27 @@ begin
 	begin                                                                                          
 	  if (rising_edge (M_AXIS_ACLK)) then                                                          
 	    if(reset_s = '1' or reset_ext_i = '1') then                                                                                                                            
-	      axis_tlast_delay <= '0';
-	      axis_tvalid_delay <= '0';                                                                 
+	      axis_tlast_delay_1cycle <= '0';
+	      axis_tvalid_delay_1cycle <= '0';                                                                 
 	    else                                                                                                                                            
-	      axis_tlast_delay <= axis_tlast;
-	      axis_tvalid_delay <= axis_tvalid;                                                          
+	      axis_tlast_delay_1cycle <= axis_tlast;
+	      axis_tvalid_delay_1cycle <= axis_tvalid;                                                          
 	    end if;                                                                                    
 	  end if;                                                                                      
-	end process;                                                                                   
+	end process;
+	
+    process(M_AXIS_ACLK)                                                                           
+	begin                                                                                          
+	  if (rising_edge (M_AXIS_ACLK)) then                                                          
+	    if(reset_s = '1' or reset_ext_i = '1') then                                                                                                                            
+	      axis_tlast_delay_2cycle <= '0';
+	      axis_tvalid_delay_2cycle <= '0';                                                                 
+	    else                                                                                                                                            
+	      axis_tlast_delay_2cycle <= axis_tlast_delay_1cycle;
+	      axis_tvalid_delay_2cycle <= axis_tvalid_delay_1cycle;                                                          
+	    end if;                                                                                    
+	  end if;                                                                                      
+	end process;                                                                                     
     
     M_AXIS_TDATA <= output_data_i;
     
@@ -87,6 +102,6 @@ begin
     
     ready_o <= M_AXIS_TREADY;-- and axis_tvalid_delay;
     
-    output_transfer_finished_o <= axis_tlast_delay;
+    output_transfer_finished_o <= axis_tlast_delay_2cycle;
 
 end Behavioral;

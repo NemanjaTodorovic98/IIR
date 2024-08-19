@@ -38,10 +38,11 @@ begin
              );
     
     OUTPUT_REG:
-    entity work.data_register(Behavioral)
+    entity work.data_register_enable(Behavioral)
     generic map(WIDTH => WIDTH)
     port map(
                 clk_i => clk_i,
+                en_i => input_data_wen_i,
                 data_in_i => output_data_i,
                 data_out_o => output_data_o,
                 reset_i => reset_s

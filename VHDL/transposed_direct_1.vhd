@@ -51,8 +51,6 @@ begin
     generic map(WIDTH => WIDTH)
     port map(operand1_i=>input_i,
              operand2_i=>left_network_output_s(1),
---             clk_i => clk_i,
---             reset_i => reset_s,
              result_o=>input_vertical_s);
              
     MULTIPLIER:
@@ -69,8 +67,6 @@ begin
     generic map(WIDTH => WIDTH)
     port map(operand1_i=>multiplier_to_output_adder_s,
              operand2_i=>right_network_output_s(1),
---             clk_i => clk_i,
---             reset_i => reset_s,
              result_o=>output_o);           
 
     GENERATE_NETWORK:

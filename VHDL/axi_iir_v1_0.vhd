@@ -6,7 +6,7 @@ use work.types.all;
 entity axi_iir_v1_0 is
 	generic (
         WIDTH: natural := 32;
-        FILTER_ORDER: natural := 3;
+        FILTER_ORDER: natural := 2;
         INTEGER_LENGTH: natural := 11;
         FRACTION_LENGTH: natural := 20
 	);

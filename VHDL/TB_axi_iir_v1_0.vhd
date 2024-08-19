@@ -115,15 +115,18 @@ begin
     s00_axis_input_aclk_s <= clk_s;
     m00_axis_output_aclk_s <= clk_s;
     
-    s00_axis_input_aresetn_s <= '0', '1' after CLOCK_PERIOD;
-    m00_axis_output_aresetn_s <= '1';
+    s00_axis_input_aresetn_s <= '0', '1' after 150ns;
+    m00_axis_output_aresetn_s <= '0', '1' after 150ns;
     s00_axis_input_tstrb_s <= "1111";
     
     INPUT_GENERATION:process
         variable file_line : line;
     begin
         s00_axis_input_tvalid_s <= '0';
-        wait for CLOCK_PERIOD;
+        input_s <= (others => '0');
+        s00_axis_input_tdata_s <= (others => '0');
+        wait until rising_edge(clk_s);
+        wait until rising_edge(clk_s);
         --wait until s00_axis_input_tready_s = '1';
         while not endfile(input_test_vector) loop
             --wait until s00_axis_input_tready_s = '1';
@@ -132,7 +135,7 @@ begin
             s00_axis_input_tdata_s <= to_std_logic_vector(string(file_line));          
 --            s00_axis_input_tready_s
             s00_axis_input_tvalid_s	<= '1';
-            wait until falling_edge(clk_s);
+            wait until rising_edge(clk_s);
         end loop;
     end process;
     
@@ -142,7 +145,7 @@ begin
         variable file_line : line;
     begin
         expected_s <= (others=>'0');
-        wait for 2*CLOCK_PERIOD;
+        wait for 3*CLOCK_PERIOD;
         wait until rising_edge(clk_s);
         while not endfile(expected_results) loop
             readline(expected_results,file_line);

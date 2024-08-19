@@ -18,7 +18,7 @@ begin
 
     process(clk_i)is
     begin
-        if(clk_i'event and clk_i = '1') then
+        if(rising_edge(clk_i)) then
             if(reset_i = '1')then
                 data_out_next_s <= (others=>'0');
             elsif(en_i = '1')then

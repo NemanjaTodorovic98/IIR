@@ -11,13 +11,13 @@ end TB_const_multiplier;
 
 architecture Behavioral of TB_const_multiplier is
 
-    constant WIDTH:natural:= 64;
-    constant INTEGER_LENGTH:natural:= 23;
-    constant FRACTION_LENGTH:natural:= 40;
+    constant WIDTH:natural:= 32;
+    constant INTEGER_LENGTH:natural:= 11;
+    constant FRACTION_LENGTH:natural:= 20;
 
-    file op1_vector : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\Operand1.txt";
-    file op2_vector : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\Operand2.txt";
-    file expected_results : text open read_mode is "C:\Users\Nemanja\Desktop\IIR filter\ResultMultiplication.txt";
+    file op1_vector : text open read_mode is "D:\Project\IIR\Operand1.txt";
+    file op2_vector : text open read_mode is "D:\Project\IIR\Operand2.txt";
+    file expected_results : text open read_mode is "D:\Project\IIR\ResultMultiplication.txt";
        
     signal op1: std_logic_vector(WIDTH - 1 downto 0);
     signal op2: std_logic_vector(WIDTH - 1 downto 0);
@@ -62,9 +62,9 @@ begin
                 INTEGER_LENGTH => INTEGER_LENGTH,
                 FRACTION_LENGTH => FRACTION_LENGTH
                 )
-    port map(operand1 => op1,
-             operand2 => op2,
-             result => result
+    port map(operand1_i => op1,
+             operand2_i => op2,
+             result_o => result
 	        );    
 	        
 end Behavioral;

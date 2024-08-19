@@ -12,20 +12,23 @@ entity data_register is
 end data_register;
 
 architecture Behavioral of data_register is
-    signal data_out_next_s:STD_LOGIC_VECTOR(WIDTH - 1 downto 0);
+    --signal data_out_next_s:STD_LOGIC_VECTOR(WIDTH - 1 downto 0);
 begin
 
     process(clk_i)is
     begin
-        if(clk_i'event and clk_i = '1') then
+ --       if(clk_i'event and clk_i = '1') then
+        if(rising_edge(clk_i)) then
             if(reset_i = '1')then
-                data_out_next_s <= (others=>'0');
+                --data_out_next_s <= (others=>'0');
+                data_out_o <= (others=>'0');
             else
-                data_out_next_s <= data_in_i;
+                --data_out_next_s <= data_in_i;
+                data_out_o <= data_in_i;
             end if; 
         end if;
     end process;
     
-    data_out_o <= data_out_next_s;
+    --data_out_o <= data_out_next_s;
     
 end Behavioral;
