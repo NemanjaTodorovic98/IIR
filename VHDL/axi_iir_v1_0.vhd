@@ -106,9 +106,7 @@ architecture arch_imp of axi_iir_v1_0 is
     signal input_data_to_filter_s : std_logic_vector(WIDTH - 1 downto 0);
     signal output_data_from_filter_s : std_logic_vector(WIDTH - 1 downto 0);
     
-    signal reset_int_s : std_logic;
-    signal reset_ext_s : std_logic;
-    
+    signal reset_s : std_logic;
 begin
 
 -- Instantiation of Axi Bus Interface S00_AXIS_INPUT
@@ -118,11 +116,10 @@ AXI_STREAM_INPUT : entity work.axi_iir_v1_0_S00_AXIS_INPUT(Behavioral)
 	)
 	port map (
 	    ready_i                   => ready_s,
-        reset_int_i               => reset_int_s,
         input_data_o              => input_data_s,
         input_data_valid_o        => input_data_valid_s,
         input_transfer_finished_o => input_transfer_finished_s,
-        reset_ext_o               => reset_ext_s,
+        reset_o               => reset_s,
         
 		S_AXIS_ACLK	    => s00_axis_input_aclk,
 		S_AXIS_ARESETN	=> s00_axis_input_aresetn,
@@ -144,8 +141,6 @@ AXI_STREAM_OUTPUT : entity work.axi_iir_v1_0_M00_AXIS_OUTPUT(Behavioral)
         output_data_i              => output_data_s,
         tstrb_propagate_i          => s00_axis_input_tstrb,
         ready_o                    => ready_s,
-        output_transfer_finished_o => reset_int_s,
-        reset_ext_i                => reset_ext_s,
         
 		M_AXIS_ACLK	    => m00_axis_output_aclk,
 		M_AXIS_ARESETN	=> m00_axis_output_aresetn,
@@ -164,8 +159,7 @@ IIR_filter: entity work.transposed_direct_1(Mixed)
                  Acoeff_array => Acoeff_array,
                  Bcoeff_array => Bcoeff_array)
     Port map ( clk_i => s00_axis_input_aclk,
-               reset_int_i => reset_int_s,
-               reset_ext_i => reset_ext_s,
+               reset_i => reset_s,
                input_i => input_data_to_filter_s,
                output_o => output_data_from_filter_s);
 
@@ -173,15 +167,13 @@ MEMORY_SUBSYSEM: entity work.memory_subsys(Structural)
     Generic Map(WIDTH => WIDTH)
     Port Map(
             clk_i => s00_axis_input_aclk,
-            reset_int_i => reset_int_s,
-            reset_ext_i => reset_ext_s,
+            reset_i => reset_s,
             input_data_wen_i => input_data_valid_s,
             input_data_i => input_data_s,
             input_data_o => input_data_to_filter_s,
             output_data_i => output_data_from_filter_s,
             output_data_o => output_data_s
          );
-	-- Add user logic here
-	-- User logic ends
 
+    
 end arch_imp;

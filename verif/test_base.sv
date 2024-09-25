@@ -6,6 +6,7 @@
    `uvm_component_utils(test_base)
 
    iir_driver drv;
+   iir_monitor mon;
    iir_sequencer seqr;
    iir_seq_item seq_item1;
    function new(string name = "test_base", uvm_component parent = null);
@@ -15,6 +16,7 @@
    function void build_phase(uvm_phase phase);
       super.build_phase(phase);
       drv = iir_driver::type_id::create("drv", this);      
+      mon = iir_monitor::type_id::create("mon", this);      
       seqr = iir_sequencer::type_id::create("seqr", this);      
    endfunction : build_phase
 

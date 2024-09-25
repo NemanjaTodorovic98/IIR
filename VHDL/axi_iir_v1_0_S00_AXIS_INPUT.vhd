@@ -9,12 +9,11 @@ entity axi_iir_v1_0_S00_AXIS_INPUT is
 	);
 	port (
         ready_i : in STD_LOGIC;
-        reset_int_i : in STD_LOGIC;
         
         input_data_o : out STD_LOGIC_VECTOR(C_S_AXIS_TDATA_WIDTH-1 downto 0);
         input_data_valid_o : out STD_LOGIC;
         input_transfer_finished_o : out STD_LOGIC;
-        reset_ext_o : out STD_LOGIC;
+        reset_o : out STD_LOGIC;
 
 		-- AXI4Stream sink: Clock
 		S_AXIS_ACLK	: in std_logic;
@@ -40,23 +39,10 @@ architecture Behavioral of axi_iir_v1_0_S00_AXIS_INPUT is
 begin
 
 	S_AXIS_TREADY <=  ready_i;
-
-    TRANSFER_ENDED:process(S_AXIS_ACLK) is
-    begin
-        if(rising_edge(S_AXIS_ACLK)) then
-            if (not S_AXIS_ARESETN = '1' or reset_int_i = '1') then
-                input_transfer_finished_s <= '0';
-            elsif (S_AXIS_TLAST = '1') then
-                input_transfer_finished_s <= '1'; 
-            end if;
-        end if;
-    end process;
     
-    input_transfer_finished_o <= input_transfer_finished_s;
+    input_transfer_finished_o <= S_AXIS_TLAST;
 
     input_data_o <= S_AXIS_TDATA;
     input_data_valid_o <= S_AXIS_TVALID;
-    
-    reset_ext_o <= not S_AXIS_ARESETN;
-    
+    reset_o <= not S_AXIS_ARESETN;
 end Behavioral;

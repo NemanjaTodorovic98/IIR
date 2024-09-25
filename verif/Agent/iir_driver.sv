@@ -15,43 +15,21 @@ class iir_driver extends uvm_driver#(iir_seq_item);
    endfunction // build_phase
    
    task main_phase(uvm_phase phase);
-      forever begin
-	 @(posedge vif.clk);	 
-	 if (!vif.rst)
-	   begin
-          seq_item_port.get_next_item(req);
-	      
-          `uvm_info(get_type_name(),$sformatf("Driver sending...\n%s", req.sprint()),UVM_HIGH)
-//	      vif.s00_axis_input_tdata = req.s00_in_tdata;      
-//	      @(posedge vif.clk);
-	      vif.s00_axis_input_tdata = req.s00_in_tdata;	 
-	      vif.s00_axis_input_tlast = req.s00_in_tlast;
-	      vif.s00_axis_input_tvalid = req.s00_in_tvalid;  
-	      
-          seq_item_port.item_done();
-	   end
-      end
+        forever begin
+            @(posedge vif.clk);	 
+            seq_item_port.get_next_item(req);
+            
+            `uvm_info(get_type_name(),$sformatf("Driver sending...\n%s", req.sprint()),UVM_HIGH)
+            vif.s00_axis_input_tdata = req.s00_in_tdata;	 
+            vif.s00_axis_input_tlast = req.s00_in_tlast;
+            vif.s00_axis_input_tvalid = req.s00_in_tvalid;  
+            vif.s00_axis_input_tstrb = req.s00_in_tstrb;
+            vif.m00_axis_output_tready = req.m00_in_tready;
+
+            seq_item_port.item_done();         
+        end 
    endtask : main_phase
 
 endclass : iir_driver
 
 `endif
-
-//   logic                    s00_axis_input_aclk;
-//   logic                    s00_axis_input_aresetn;
-//   logic                    s00_axis_input_tready;
-//   logic[WIDTH-1 : 0]       s00_axis_input_tdata;
-//   logic[(WIDTH/8)-1 : 0]   s00_axis_input_tstrb;
-//   logic                    s00_axis_input_tlast;
-//   logic                    s00_axis_input_tvalid;
-   
-//   //AXI Master (output)
-//   logic                    m00_axis_output_aclk;
-//   logic                    m00_axis_output_aresetn;
-//   logic                    m00_axis_output_tvalid;
-//   logic[WIDTH-1 : 0]       m00_axis_output_tdata;
-//   logic[(WIDTH/8)-1 : 0]   m00_axis_output_tstrb;
-//   logic                    m00_axis_output_tlast;
-//   logic                    m00_axis_output_tready;
-
-

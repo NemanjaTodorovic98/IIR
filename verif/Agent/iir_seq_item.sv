@@ -4,7 +4,7 @@
 class iir_seq_item extends uvm_sequence_item;
 
    rand logic [31:0] s00_in_tdata;
-   logic [31:0] s00_in_tstrb;
+   logic [3:0] s00_in_tstrb;
    logic s00_in_tlast;
    logic s00_in_tvalid;
    
