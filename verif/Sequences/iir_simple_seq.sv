@@ -6,8 +6,28 @@ class iir_simple_seq extends iir_base_seq;
    `uvm_object_utils(iir_simple_seq)
    
    int trans_count = 10;
-   
-   function new(string name = "iir_seq");
+   logic [31:0] sys_input[0:9] =
+//   '{32'h00100000,
+//     32'h00200000,
+//     32'h00300000,
+//     32'h00400000,
+//     32'h00500000,
+//     32'h00600000,
+//     32'h00700000,
+//     32'h00800000,
+//     32'h00900000,
+//     32'h00A00000};
+          '{32'b00000000000001000111111101101110,
+            32'b00000000000010001010001000000000,
+            32'b00000000000011000001001001010101,
+            32'b00000000000011101000100101101111,
+            32'b00000000000011111101010001100110,
+            32'b00000000000011111101100010001011,
+            32'b00000000000011101001010110000111,
+            32'b00000000000011000010010101101000,
+            32'b00000000000010001011101010000011,
+            32'b00000000000001001001101101100111};
+   function new(string name = "iir_simple_seq");
       super.new(name);
    endfunction
    
@@ -39,6 +59,9 @@ class iir_simple_seq extends iir_base_seq;
           // treci korak priprema
           // po potrebi moguce prosiriti sa npr. inline ogranicenjima
           assert (iir_item.randomize() );
+          
+          //iir_item.s00_in_tdata &= 32'b10000000011111111111111111111111;
+          iir_item.s00_in_tdata = sys_input[i-1];
           if(i == trans_count)
             iir_item.s00_in_tlast = 1;
           else

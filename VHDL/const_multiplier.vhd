@@ -13,9 +13,6 @@ end const_multiplier;
 
 architecture Behavioral of const_multiplier is
 
---    attribute use_dsp : string;
---    attribute use_dsp of Behavioral : architecture is "yes";
-
 begin
 
     process(operand1_i, operand2_i)
@@ -28,7 +25,7 @@ begin
         operand2_signed := signed(operand2_i);
         product := operand1_signed * operand2_signed;
 
-        shifted_product := shift_right(product, WIDTH - INTEGER_LENGTH - 1)(WIDTH-1 downto 0);
+        shifted_product := shift_right(product, FRACTION_LENGTH)(WIDTH-1 downto 0);
         result_o <= std_logic_vector(shifted_product);
     end process;
     

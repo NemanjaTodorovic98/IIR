@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.ALL;
 use work.types.all;
 
 entity transposed_direct_1 is
-    generic(FILTER_ORDER:natural:=3;
+    generic(FILTER_ORDER:natural:=8;
             WIDTH:natural:=32;
             INTEGER_LENGTH:natural:=11;
             FRACTION_LENGTH:natural:=20;
@@ -55,7 +55,7 @@ begin
                 FRACTION_LENGTH => FRACTION_LENGTH)
     port map(operand1_i=>input_vertical_s,
              operand2_i=>Bcoeff_array(0),
-             result_o=>multiplier_to_output_adder_s);
+             result_o=>multiplier_to_output_adder_s);     
              
     OUTPUT_ADDER:
     entity work.adder(Behavioral)
@@ -79,7 +79,7 @@ begin
                  right_adder_input_i => right_network_output_s(iterator + 1),
                  left_reg_output_o => left_network_output_s(iterator),
                  right_reg_output_o => right_network_output_s(iterator)
-                 );           
+                 );          
     end generate;
     
     LAST_CELL:

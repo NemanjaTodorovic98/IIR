@@ -8,7 +8,9 @@ package iir_test_pkg;
 
    import iir_agent_pkg::*;
    import iir_seq_pkg::*;
-
+   import configurations_pkg::*;   
+ `include "iir_scoreboard.sv"
+ `include "iir_env.sv"   
  `include "test_base.sv"
  `include "test_simple.sv"
  `include "test_simple_2.sv"

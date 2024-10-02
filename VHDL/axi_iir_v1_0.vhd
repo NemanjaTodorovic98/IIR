@@ -6,7 +6,7 @@ use work.types.all;
 entity axi_iir_v1_0 is
 	generic (
         WIDTH: natural := 32;
-        FILTER_ORDER: natural := 2;
+        FILTER_ORDER: natural := 8;
         INTEGER_LENGTH: natural := 11;
         FRACTION_LENGTH: natural := 20
 	);
@@ -33,22 +33,6 @@ entity axi_iir_v1_0 is
 end axi_iir_v1_0;
 
 architecture arch_imp of axi_iir_v1_0 is
-
---    constant Acoeff_array:logic_vector_array_type_fixed:= 
---    (
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
---    );
-    
---    constant Bcoeff_array:logic_vector_array_type_fixed:= 
---    (
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000",
---        x"00100000", x"00100000", x"00100000", x"00100000",x"00100000"
---    );
     
     constant Acoeff_array:logic_vector_array_type_fixed:= 
     (
@@ -72,7 +56,8 @@ architecture arch_imp of axi_iir_v1_0 is
         "00000000000000000000000000000000",
         "00000000000000000000000000000000",
         "00000000000000000000000000000000"
-    );
+     );
+
     constant Bcoeff_array:logic_vector_array_type_fixed:= 
     (
         "00000000000000000000000010000100", 
@@ -161,7 +146,8 @@ IIR_filter: entity work.transposed_direct_1(Mixed)
     Port map ( clk_i => s00_axis_input_aclk,
                reset_i => reset_s,
                input_i => input_data_to_filter_s,
-               output_o => output_data_from_filter_s);
+               output_o => output_data_from_filter_s                              
+               );
 
 MEMORY_SUBSYSEM: entity work.memory_subsys(Structural)
     Generic Map(WIDTH => WIDTH)
